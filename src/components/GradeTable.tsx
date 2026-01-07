@@ -148,8 +148,8 @@ const GradeTable: React.FC = () => {
 
     if (loading) {
         return (
-            <div className="w-full h-96 flex items-center justify-center bg-white/5 backdrop-blur-md rounded-2xl border border-white/10">
-                <Loader2 className="w-12 h-12 text-blue-400 animate-spin" />
+            <div className="w-full h-96 flex items-center justify-center glass rounded-2xl border-[var(--glass-border)]">
+                <Loader2 className="w-12 h-12 text-[var(--primary)] animate-spin" />
             </div>
         );
     }
@@ -157,19 +157,19 @@ const GradeTable: React.FC = () => {
     return (
         <div className="space-y-6 w-full">
             {/* Search Bar */}
-            <div className="relative group max-w-2xl mx-auto w-full">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40 group-focus-within:text-blue-400 transition-colors" />
+            <div className="relative group max-w-2xl mx-auto w-full transition-all">
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--text-muted)] group-focus-within:text-[var(--primary)] transition-colors" />
                 <input
                     type="text"
                     placeholder="输入学号或姓名查询..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full bg-white/5 border border-white/20 hover:border-white/40 focus:border-blue-500 rounded-xl py-3 pl-12 pr-4 text-white outline-none transition-all backdrop-blur-sm"
+                    className="w-full glass border-[var(--glass-border)] hover:border-[var(--primary)]/40 focus:border-[var(--primary)] rounded-xl py-3 pl-12 pr-4 text-[var(--foreground)] outline-none transition-all shadow-lg focus:shadow-[var(--primary)]/10"
                 />
             </div>
 
             {/* Table Container */}
-            <div className="w-full overflow-hidden rounded-2xl border border-white/20 bg-white/10 backdrop-blur-md shadow-2xl">
+            <div className="w-full overflow-hidden rounded-2xl border-[var(--glass-border)] glass shadow-2xl transition-all">
                 <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse">
                         <thead>
@@ -178,43 +178,43 @@ const GradeTable: React.FC = () => {
                                     <th
                                         key={header.key}
                                         onClick={() => requestSort(header.key)}
-                                        className="px-6 py-4 cursor-pointer group hover:bg-white/10 transition-colors"
+                                        className="px-6 py-4 cursor-pointer group hover:bg-[var(--glass-bg)] transition-colors"
                                     >
-                                        <div className="flex items-center gap-2 text-sm font-semibold text-white/80">
+                                        <div className="flex items-center gap-2 text-sm font-semibold text-[var(--foreground)] opacity-80">
                                             {header.label}
                                             {getSortIcon(header.key)}
                                         </div>
                                     </th>
                                 ))}
-                                <th className="px-6 py-4 text-sm font-semibold text-white/80">操作</th>
+                                <th className="px-6 py-4 text-sm font-semibold text-[var(--foreground)] opacity-80">操作</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-white/10">
                             {paginatedData.map((student, index) => (
                                 <tr
                                     key={student.id}
-                                    className="hover:bg-white/5 transition-colors animate-in fade-in slide-in-from-bottom-2 duration-300"
+                                    className="hover:bg-[var(--glass-bg)] border-b border-[var(--glass-border)] transition-colors animate-in fade-in slide-in-from-bottom-2 duration-300"
                                     style={{ animationDelay: `${index * 10}ms` }}
                                 >
-                                    <td className="px-6 py-4 text-sm font-medium text-white/90">{student.id}</td>
-                                    <td className="px-6 py-4 text-sm text-white/80">{student.name}</td>
-                                    <td className="px-6 py-4 text-sm text-white/70">{student.chinese}</td>
-                                    <td className="px-6 py-4 text-sm text-white/70">{student.math}</td>
-                                    <td className="px-6 py-4 text-sm text-white/70">{student.english}</td>
-                                    <td className="px-6 py-4 text-sm text-white/70">{student.physics}</td>
-                                    <td className="px-6 py-4 text-sm text-white/70">{student.chemistry}</td>
-                                    <td className="px-6 py-4 text-sm font-bold text-blue-300">{student.total}</td>
+                                    <td className="px-6 py-4 text-sm font-medium text-[var(--foreground)]">{student.id}</td>
+                                    <td className="px-6 py-4 text-sm text-[var(--foreground)] opacity-80">{student.name}</td>
+                                    <td className="px-6 py-4 text-sm text-[var(--text-muted)]">{student.chinese}</td>
+                                    <td className="px-6 py-4 text-sm text-[var(--text-muted)]">{student.math}</td>
+                                    <td className="px-6 py-4 text-sm text-[var(--text-muted)]">{student.english}</td>
+                                    <td className="px-6 py-4 text-sm text-[var(--text-muted)]">{student.physics}</td>
+                                    <td className="px-6 py-4 text-sm text-[var(--text-muted)]">{student.chemistry}</td>
+                                    <td className="px-6 py-4 text-sm font-bold text-[var(--primary)]">{student.total}</td>
                                     <td className="px-6 py-4 flex gap-1">
                                         <button
                                             onClick={() => setEditingStudent(student)}
-                                            className="p-2 hover:bg-white/10 rounded-lg transition-colors text-white/60 hover:text-blue-400"
+                                            className="p-2 hover:bg-[var(--primary)]/10 rounded-lg transition-colors text-[var(--text-muted)] hover:text-[var(--primary)]"
                                             title="编辑"
                                         >
                                             <Edit2 className="w-4 h-4" />
                                         </button>
                                         <button
                                             onClick={() => setDeletingStudent(student)}
-                                            className="p-2 hover:bg-white/10 rounded-lg transition-colors text-white/60 hover:text-red-400"
+                                            className="p-2 hover:bg-red-500/10 rounded-lg transition-colors text-[var(--text-muted)] hover:text-red-500"
                                             title="删除"
                                         >
                                             <Trash2 className="w-4 h-4" />
@@ -224,7 +224,7 @@ const GradeTable: React.FC = () => {
                             ))}
                             {paginatedData.length === 0 && (
                                 <tr>
-                                    <td colSpan={9} className="px-6 py-12 text-center text-white/40 italic">
+                                    <td colSpan={9} className="px-6 py-12 text-center text-[var(--text-muted)] italic">
                                         未找到匹配的学生记录
                                     </td>
                                 </tr>
@@ -234,12 +234,12 @@ const GradeTable: React.FC = () => {
                 </div>
 
                 {/* Pagination Controls */}
-                <div className="px-6 py-4 bg-white/5 border-t border-white/10 flex items-center justify-between">
+                <div className="px-6 py-4 bg-[var(--glass-bg)] border-t border-[var(--glass-border)] flex items-center justify-between transition-colors">
                     <div className="flex items-center gap-4">
-                        <p className="text-sm text-white/60">
+                        <p className="text-sm text-[var(--text-muted)]">
                             显示 {Math.min(filteredData.length, (currentPage - 1) * pageSize + 1)} - {Math.min(filteredData.length, currentPage * pageSize)}，共 {filteredData.length} 条记录
                         </p>
-                        <div className="flex items-center gap-2 text-sm text-white/60 bg-white/5 rounded-lg px-2 py-1 border border-white/10">
+                        <div className="flex items-center gap-2 text-sm text-[var(--text-muted)] bg-[var(--glass-bg)] rounded-lg px-2 py-1 border border-[var(--glass-border)]">
                             <span>每页显示</span>
                             <select
                                 value={pageSize}
@@ -247,10 +247,10 @@ const GradeTable: React.FC = () => {
                                     setPageSize(Number(e.target.value));
                                     setCurrentPage(1);
                                 }}
-                                className="bg-transparent text-white outline-none cursor-pointer font-medium"
+                                className="bg-transparent text-[var(--foreground)] outline-none cursor-pointer font-medium"
                             >
                                 {[5, 10, 20, 50].map(size => (
-                                    <option key={size} value={size} className="bg-slate-900">{size}</option>
+                                    <option key={size} value={size} className="bg-[var(--card)] text-[var(--foreground)]">{size}</option>
                                 ))}
                             </select>
                         </div>
@@ -259,7 +259,7 @@ const GradeTable: React.FC = () => {
                         <button
                             onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
                             disabled={currentPage === 1}
-                            className="p-2 rounded-lg bg-white/5 hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed transition-colors text-white"
+                            className="p-2 rounded-lg bg-[var(--glass-bg)] hover:bg-[var(--primary)]/10 disabled:opacity-30 disabled:cursor-not-allowed transition-all text-[var(--foreground)] border border-[var(--glass-border)]"
                         >
                             <ChevronLeft className="w-5 h-5" />
                         </button>
@@ -268,9 +268,9 @@ const GradeTable: React.FC = () => {
                                 <button
                                     key={page}
                                     onClick={() => setCurrentPage(page)}
-                                    className={`w-8 h-8 rounded-lg text-sm font-medium transition-all ${currentPage === page
-                                        ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/20'
-                                        : 'bg-white/5 text-white/60 hover:bg-white/10 hover:text-white'
+                                    className={`w-8 h-8 rounded-lg text-sm font-medium transition-all border ${currentPage === page
+                                        ? 'bg-[var(--primary)] text-white border-[var(--primary)] shadow-lg shadow-[var(--primary)]/20'
+                                        : 'bg-[var(--glass-bg)] text-[var(--text-muted)] border-[var(--glass-border)] hover:bg-[var(--primary)]/10 hover:text-[var(--primary)]'
                                         }`}
                                 >
                                     {page}
@@ -280,7 +280,7 @@ const GradeTable: React.FC = () => {
                         <button
                             onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
                             disabled={currentPage === totalPages || totalPages === 0}
-                            className="p-2 rounded-lg bg-white/5 hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed transition-colors text-white"
+                            className="p-2 rounded-lg bg-[var(--glass-bg)] hover:bg-[var(--primary)]/10 disabled:opacity-30 disabled:cursor-not-allowed transition-all text-[var(--foreground)] border border-[var(--glass-border)]"
                         >
                             <ChevronRight className="w-5 h-5" />
                         </button>
@@ -290,11 +290,11 @@ const GradeTable: React.FC = () => {
 
             {/* Edit Modal */}
             {editingStudent && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-                    <div className="w-full max-w-md bg-slate-900 border border-white/20 rounded-2xl shadow-2xl p-6 space-y-6">
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-in fade-in duration-300">
+                    <div className="w-full max-w-md bg-[var(--card)] border border-[var(--glass-border)] rounded-2xl shadow-2xl p-6 space-y-6 transition-all">
                         <div className="flex items-center justify-between">
-                            <h2 className="text-xl font-bold text-white">修改成绩 - {editingStudent.name}</h2>
-                            <button onClick={() => setEditingStudent(null)} className="text-white/60 hover:text-white">
+                            <h2 className="text-xl font-bold text-[var(--foreground)]">修改成绩 - {editingStudent.name}</h2>
+                            <button onClick={() => setEditingStudent(null)} className="text-[var(--text-muted)] hover:text-[var(--foreground)] transition-colors">
                                 <X className="w-6 h-6" />
                             </button>
                         </div>
@@ -302,7 +302,7 @@ const GradeTable: React.FC = () => {
                         <form onSubmit={handleUpdate} className="grid grid-cols-2 gap-4">
                             {['chinese', 'math', 'english', 'physics', 'chemistry'].map((subject) => (
                                 <div key={subject} className="space-y-2">
-                                    <label className="text-sm font-medium text-white/60 capitalize">
+                                    <label className="text-sm font-medium text-[var(--text-muted)] capitalize">
                                         {headers.find(h => h.key === subject)?.label}
                                     </label>
                                     <input
@@ -311,7 +311,7 @@ const GradeTable: React.FC = () => {
                                         max={['chinese', 'math', 'english'].includes(subject) ? 150 : 100}
                                         value={(editingStudent as any)[subject]}
                                         onChange={(e) => setEditingStudent({ ...editingStudent, [subject]: parseInt(e.target.value) || 0 })}
-                                        className="w-full bg-white/5 border border-white/10 focus:border-blue-500 rounded-lg px-4 py-2 text-white outline-none transition-colors"
+                                        className="w-full bg-[var(--background)] border border-[var(--glass-border)] focus:border-[var(--primary)] rounded-lg px-4 py-2 text-[var(--foreground)] outline-none transition-all shadow-inner"
                                     />
                                 </div>
                             ))}
@@ -319,14 +319,14 @@ const GradeTable: React.FC = () => {
                                 <button
                                     type="button"
                                     onClick={() => setEditingStudent(null)}
-                                    className="flex-1 px-4 py-2 rounded-lg bg-white/5 hover:bg-white/10 text-white font-medium transition-colors"
+                                    className="flex-1 px-4 py-2 rounded-lg bg-[var(--background)] hover:bg-[var(--glass-bg)] text-[var(--foreground)] font-medium transition-colors border border-[var(--glass-border)]"
                                 >
                                     取消
                                 </button>
                                 <button
                                     type="submit"
                                     disabled={isUpdating}
-                                    className="flex-1 px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 disabled:bg-blue-800 text-white font-medium transition-colors flex items-center justify-center gap-2"
+                                    className="flex-1 px-4 py-2 rounded-lg bg-[var(--primary)] hover:opacity-90 disabled:opacity-50 text-white font-medium transition-all shadow-lg shadow-[var(--primary)]/20 flex items-center justify-center gap-2"
                                 >
                                     {isUpdating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4" />}
                                     保存修改
@@ -339,16 +339,16 @@ const GradeTable: React.FC = () => {
 
             {/* Delete Confirmation Modal */}
             {deletingStudent && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
-                    <div className="w-full max-w-sm bg-slate-900 border border-red-500/20 rounded-2xl shadow-2xl p-6 space-y-6 animate-in zoom-in-95 duration-200">
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-in fade-in duration-200">
+                    <div className="w-full max-w-sm bg-[var(--card)] border border-red-500/20 rounded-2xl shadow-2xl p-6 space-y-6 animate-in zoom-in-95 duration-200 transition-all">
                         <div className="flex flex-col items-center text-center space-y-4">
-                            <div className="w-16 h-16 bg-red-500/10 rounded-full flex items-center justify-center">
+                            <div className="w-16 h-16 bg-red-500/10 rounded-full flex items-center justify-center shadow-inner">
                                 <AlertTriangle className="w-8 h-8 text-red-500" />
                             </div>
                             <div className="space-y-2">
-                                <h2 className="text-xl font-bold text-white">确认删除？</h2>
-                                <p className="text-white/60 text-sm">
-                                    您确定要删除学生 <span className="text-white font-semibold">{deletingStudent.name}</span> (学号: {deletingStudent.id}) 的所有成绩吗？此操作不可撤销。
+                                <h2 className="text-xl font-bold text-[var(--foreground)]">确认删除？</h2>
+                                <p className="text-[var(--text-muted)] text-sm">
+                                    您确定要删除学生 <span className="text-[var(--foreground)] font-semibold">{deletingStudent.name}</span> (学号: {deletingStudent.id}) 的所有成绩吗？此操作不可撤销。
                                 </p>
                             </div>
                         </div>
@@ -356,14 +356,14 @@ const GradeTable: React.FC = () => {
                         <div className="flex gap-3">
                             <button
                                 onClick={() => setDeletingStudent(null)}
-                                className="flex-1 px-4 py-2 rounded-lg bg-white/5 hover:bg-white/10 text-white font-medium transition-colors"
+                                className="flex-1 px-4 py-2 rounded-lg bg-[var(--background)] hover:bg-[var(--glass-bg)] text-[var(--foreground)] font-medium transition-colors border border-[var(--glass-border)]"
                             >
                                 取消
                             </button>
                             <button
                                 onClick={handleDelete}
                                 disabled={isDeleting}
-                                className="flex-1 px-4 py-2 rounded-lg bg-red-600 hover:bg-red-500 disabled:bg-red-900 text-white font-medium transition-colors flex items-center justify-center gap-2"
+                                className="flex-1 px-4 py-2 rounded-lg bg-red-600 hover:bg-red-500 disabled:opacity-50 text-white font-medium transition-all shadow-lg shadow-red-500/20 flex items-center justify-center gap-2"
                             >
                                 {isDeleting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
                                 确认删除
