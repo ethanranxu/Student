@@ -5,7 +5,6 @@ import { ArrowUpDown, ChevronUp, ChevronDown, Edit2, Trash2, X, Check, Loader2, 
 import { Student } from '@/lib/mockData';
 import { supabase } from '@/lib/supabaseClient';
 
-const ITEMS_PER_PAGE = 10;
 
 type SortConfig = {
     key: keyof Student;
@@ -26,6 +25,7 @@ const GradeTable: React.FC = () => {
 
     // Pagination state
     const [currentPage, setCurrentPage] = useState(1);
+    const [pageSize, setPageSize] = useState(10);
 
     useEffect(() => {
         fetchStudents();
@@ -71,11 +71,11 @@ const GradeTable: React.FC = () => {
     }, [filteredData, sortConfig]);
 
     // 3. Paginate sorted data
-    const totalPages = Math.ceil(sortedData.length / ITEMS_PER_PAGE);
+    const totalPages = Math.ceil(sortedData.length / pageSize);
     const paginatedData = useMemo(() => {
-        const start = (currentPage - 1) * ITEMS_PER_PAGE;
-        return sortedData.slice(start, start + ITEMS_PER_PAGE);
-    }, [sortedData, currentPage]);
+        const start = (currentPage - 1) * pageSize;
+        return sortedData.slice(start, start + pageSize);
+    }, [sortedData, currentPage, pageSize]);
 
     // Reset pagination when searching
     useEffect(() => {
@@ -235,9 +235,26 @@ const GradeTable: React.FC = () => {
 
                 {/* Pagination Controls */}
                 <div className="px-6 py-4 bg-white/5 border-t border-white/10 flex items-center justify-between">
-                    <p className="text-sm text-white/60">
-                        显示 {Math.min(filteredData.length, (currentPage - 1) * ITEMS_PER_PAGE + 1)} - {Math.min(filteredData.length, currentPage * ITEMS_PER_PAGE)}，共 {filteredData.length} 条记录
-                    </p>
+                    <div className="flex items-center gap-4">
+                        <p className="text-sm text-white/60">
+                            显示 {Math.min(filteredData.length, (currentPage - 1) * pageSize + 1)} - {Math.min(filteredData.length, currentPage * pageSize)}，共 {filteredData.length} 条记录
+                        </p>
+                        <div className="flex items-center gap-2 text-sm text-white/60 bg-white/5 rounded-lg px-2 py-1 border border-white/10">
+                            <span>每页显示</span>
+                            <select
+                                value={pageSize}
+                                onChange={(e) => {
+                                    setPageSize(Number(e.target.value));
+                                    setCurrentPage(1);
+                                }}
+                                className="bg-transparent text-white outline-none cursor-pointer font-medium"
+                            >
+                                {[5, 10, 20, 50].map(size => (
+                                    <option key={size} value={size} className="bg-slate-900">{size}</option>
+                                ))}
+                            </select>
+                        </div>
+                    </div>
                     <div className="flex items-center gap-2">
                         <button
                             onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
