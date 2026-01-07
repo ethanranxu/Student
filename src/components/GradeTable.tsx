@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useMemo, useEffect } from 'react';
-import { ArrowUpDown, ChevronUp, ChevronDown, Edit2, X, Check, Loader2, Search, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ArrowUpDown, ChevronUp, ChevronDown, Edit2, Trash2, X, Check, Loader2, Search, ChevronLeft, ChevronRight, AlertTriangle } from 'lucide-react';
 import { Student } from '@/lib/mockData';
 import { supabase } from '@/lib/supabaseClient';
 
@@ -17,7 +17,9 @@ const GradeTable: React.FC = () => {
     const [loading, setLoading] = useState(true);
     const [sortConfig, setSortConfig] = useState<SortConfig>({ key: 'id', direction: 'asc' });
     const [editingStudent, setEditingStudent] = useState<Student | null>(null);
+    const [deletingStudent, setDeletingStudent] = useState<Student | null>(null);
     const [isUpdating, setIsUpdating] = useState(false);
+    const [isDeleting, setIsDeleting] = useState(false);
 
     // Search state
     const [searchTerm, setSearchTerm] = useState('');
@@ -109,6 +111,25 @@ const GradeTable: React.FC = () => {
         setIsUpdating(false);
     };
 
+    const handleDelete = async () => {
+        if (!deletingStudent) return;
+
+        setIsDeleting(true);
+        const { error } = await supabase
+            .from('students')
+            .delete()
+            .eq('id', deletingStudent.id);
+
+        if (error) {
+            alert('删除失败: ' + error.message);
+        } else {
+            // Remove from local state
+            setData(prev => prev.filter(s => s.id !== deletingStudent.id));
+            setDeletingStudent(null);
+        }
+        setIsDeleting(false);
+    };
+
     const getSortIcon = (key: keyof Student) => {
         if (sortConfig.key !== key) return <ArrowUpDown className="w-4 h-4 opacity-30 group-hover:opacity-100 transition-opacity" />;
         return sortConfig.direction === 'asc' ? <ChevronUp className="w-4 h-4 text-blue-400" /> : <ChevronDown className="w-4 h-4 text-blue-400" />;
@@ -183,12 +204,20 @@ const GradeTable: React.FC = () => {
                                     <td className="px-6 py-4 text-sm text-white/70">{student.physics}</td>
                                     <td className="px-6 py-4 text-sm text-white/70">{student.chemistry}</td>
                                     <td className="px-6 py-4 text-sm font-bold text-blue-300">{student.total}</td>
-                                    <td className="px-6 py-4">
+                                    <td className="px-6 py-4 flex gap-1">
                                         <button
                                             onClick={() => setEditingStudent(student)}
-                                            className="p-2 hover:bg-white/10 rounded-lg transition-colors text-white/60 hover:text-white"
+                                            className="p-2 hover:bg-white/10 rounded-lg transition-colors text-white/60 hover:text-blue-400"
+                                            title="编辑"
                                         >
                                             <Edit2 className="w-4 h-4" />
+                                        </button>
+                                        <button
+                                            onClick={() => setDeletingStudent(student)}
+                                            className="p-2 hover:bg-white/10 rounded-lg transition-colors text-white/60 hover:text-red-400"
+                                            title="删除"
+                                        >
+                                            <Trash2 className="w-4 h-4" />
                                         </button>
                                     </td>
                                 </tr>
@@ -287,6 +316,42 @@ const GradeTable: React.FC = () => {
                                 </button>
                             </div>
                         </form>
+                    </div>
+                </div>
+            )}
+
+            {/* Delete Confirmation Modal */}
+            {deletingStudent && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
+                    <div className="w-full max-w-sm bg-slate-900 border border-red-500/20 rounded-2xl shadow-2xl p-6 space-y-6 animate-in zoom-in-95 duration-200">
+                        <div className="flex flex-col items-center text-center space-y-4">
+                            <div className="w-16 h-16 bg-red-500/10 rounded-full flex items-center justify-center">
+                                <AlertTriangle className="w-8 h-8 text-red-500" />
+                            </div>
+                            <div className="space-y-2">
+                                <h2 className="text-xl font-bold text-white">确认删除？</h2>
+                                <p className="text-white/60 text-sm">
+                                    您确定要删除学生 <span className="text-white font-semibold">{deletingStudent.name}</span> (学号: {deletingStudent.id}) 的所有成绩吗？此操作不可撤销。
+                                </p>
+                            </div>
+                        </div>
+
+                        <div className="flex gap-3">
+                            <button
+                                onClick={() => setDeletingStudent(null)}
+                                className="flex-1 px-4 py-2 rounded-lg bg-white/5 hover:bg-white/10 text-white font-medium transition-colors"
+                            >
+                                取消
+                            </button>
+                            <button
+                                onClick={handleDelete}
+                                disabled={isDeleting}
+                                className="flex-1 px-4 py-2 rounded-lg bg-red-600 hover:bg-red-500 disabled:bg-red-900 text-white font-medium transition-colors flex items-center justify-center gap-2"
+                            >
+                                {isDeleting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
+                                确认删除
+                            </button>
+                        </div>
                     </div>
                 </div>
             )}
