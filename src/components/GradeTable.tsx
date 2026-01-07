@@ -26,6 +26,7 @@ const GradeTable: React.FC = () => {
     // Pagination state
     const [currentPage, setCurrentPage] = useState(1);
     const [pageSize, setPageSize] = useState(10);
+    const [jumpPage, setJumpPage] = useState('');
 
     useEffect(() => {
         fetchStudents();
@@ -255,7 +256,7 @@ const GradeTable: React.FC = () => {
                             </select>
                         </div>
                     </div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-3">
                         <button
                             onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
                             disabled={currentPage === 1}
@@ -264,18 +265,27 @@ const GradeTable: React.FC = () => {
                             <ChevronLeft className="w-5 h-5" />
                         </button>
                         <div className="flex items-center gap-1">
-                            {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
-                                <button
-                                    key={page}
-                                    onClick={() => setCurrentPage(page)}
-                                    className={`w-8 h-8 rounded-lg text-sm font-medium transition-all border ${currentPage === page
-                                        ? 'bg-[var(--primary)] text-white border-[var(--primary)] shadow-lg shadow-[var(--primary)]/20'
-                                        : 'bg-[var(--glass-bg)] text-[var(--text-muted)] border-[var(--glass-border)] hover:bg-[var(--primary)]/10 hover:text-[var(--primary)]'
-                                        }`}
-                                >
-                                    {page}
-                                </button>
-                            ))}
+                            {(() => {
+                                let startPage = Math.max(1, currentPage - 5);
+                                let endPage = Math.min(totalPages, startPage + 9);
+
+                                if (endPage - startPage < 9) {
+                                    startPage = Math.max(1, endPage - 9);
+                                }
+
+                                return Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i).map(page => (
+                                    <button
+                                        key={page}
+                                        onClick={() => setCurrentPage(page)}
+                                        className={`w-8 h-8 rounded-lg text-sm font-medium transition-all border ${currentPage === page
+                                            ? 'bg-[var(--primary)] text-white border-[var(--primary)] shadow-lg shadow-[var(--primary)]/20'
+                                            : 'bg-[var(--glass-bg)] text-[var(--text-muted)] border-[var(--glass-border)] hover:bg-[var(--primary)]/10 hover:text-[var(--primary)]'
+                                            }`}
+                                    >
+                                        {page}
+                                    </button>
+                                ));
+                            })()}
                         </div>
                         <button
                             onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
@@ -284,6 +294,28 @@ const GradeTable: React.FC = () => {
                         >
                             <ChevronRight className="w-5 h-5" />
                         </button>
+
+                        <div className="flex items-center gap-2 ml-2 border-l border-[var(--glass-border)] pl-4">
+                            <span className="text-sm text-[var(--text-muted)]">跳转至</span>
+                            <div className="relative">
+                                <input
+                                    type="text"
+                                    value={jumpPage}
+                                    onChange={(e) => setJumpPage(e.target.value.replace(/\D/g, ''))}
+                                    onKeyDown={(e) => {
+                                        if (e.key === 'Enter') {
+                                            const page = parseInt(jumpPage);
+                                            if (page >= 1 && page <= totalPages) {
+                                                setCurrentPage(page);
+                                                setJumpPage('');
+                                            }
+                                        }
+                                    }}
+                                    className="w-12 h-8 glass border-[var(--glass-border)] rounded-lg text-center text-sm text-[var(--foreground)] focus:border-[var(--primary)] outline-none transition-all"
+                                />
+                            </div>
+                            <span className="text-sm text-[var(--text-muted)]">页</span>
+                        </div>
                     </div>
                 </div>
             </div>
