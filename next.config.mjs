@@ -1,9 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    output: 'export',
-    distDir: 'out',
-    basePath: '/Student',
-    assetPrefix: '/Student/',
+    // Removed output: 'export' to leverage Vercel's Edge/Server features
+    // Removed basePath since Vercel usually deploys to the root domain
     trailingSlash: true,
     images: {
         unoptimized: true,
