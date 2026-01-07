@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "高端成绩系统 - FINAL",
-  description: "2024届学生成绩展示高端系统",
+  description: "2025届学生成绩展示高端系统",
 };
 
 export default function RootLayout({
